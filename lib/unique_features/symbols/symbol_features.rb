@@ -48,7 +48,7 @@ Benchmark.bmbm do |x|
       "hello_world" == "hello_world"
     end
   end
-  
+
   x.report("Symbol comparison:") do
     n.times do
       :hello_world == :hello_world
@@ -90,7 +90,7 @@ Benchmark.bmbm do |x|
       names.map { |name| name.upcase }
     end
   end
-  
+
   x.report("Symbol to proc:") do
     10_000.times do
       names.map(&:upcase)
@@ -106,19 +106,19 @@ class HTMLBuilder
   def initialize
     @html = ""
   end
-  
+
   # Method that accepts a symbol and a block
   def tag(name, attributes = {}, &block)
     # Convert symbol to string for tag name
     tag_name = name.to_s
-    
+
     # Handle attributes
     attribute_string = attributes.map { |k, v| "#{k}=\"#{v}\"" }.join(' ')
     attribute_string = " " + attribute_string unless attribute_string.empty?
-    
+
     # Open tag
     @html += "<#{tag_name}#{attribute_string}>"
-    
+
     # Execute the block in context
     if block_given?
       if block.arity == 0
@@ -130,26 +130,26 @@ class HTMLBuilder
         yield self
       end
     end
-    
+
     # Close tag
     @html += "</#{tag_name}>"
-    
+
     self # Return self for method chaining
   end
-  
+
   # Define common HTML tags using symbols
   [:div, :p, :span, :h1, :h2, :h3, :a, :img, :ul, :li, :table, :tr, :td].each do |tag_name|
     define_method(tag_name) do |attributes = {}, &block|
       tag(tag_name, attributes, &block)
     end
   end
-  
+
   # Method for text content
   def text(content)
     @html += content.to_s
     self
   end
-  
+
   # Convert to HTML string
   def to_s
     @html
@@ -179,31 +179,31 @@ class ModelSchema
   def self.field(name, type = :string, options = {})
     @fields ||= {}
     @fields[name] = { type: type, options: options }
-    
+
     # Define getter and setter methods using the symbol name
     define_method(name) do
       @attributes[name]
     end
-    
+
     define_method("#{name}=") do |value|
       @attributes[name] = convert_value(value, type)
     end
   end
-  
+
   def self.fields
     @fields || {}
   end
-  
+
   def initialize(attributes = {})
     @attributes = {}
-    
+
     # Initialize attributes using symbol keys
     attributes.each do |key, value|
       # Use public send to call the setter method
       public_send("#{key}=", value) if respond_to?("#{key}=")
     end
   end
-  
+
   def convert_value(value, type)
     case type
     when :integer
@@ -218,7 +218,7 @@ class ModelSchema
       value.to_s
     end
   end
-  
+
   def inspect
     "#<#{self.class.name} #{@attributes.inspect}>"
   end
@@ -257,15 +257,15 @@ def configure(options = {})
     timeout: 30,
     ssl: true
   }
-  
+
   # Merge user options with defaults
   settings = defaults.merge(options)
-  
+
   # Display settings
   settings.each do |key, value|
     puts "#{key}: #{value}"
   end
-  
+
   settings
 end
 
@@ -275,7 +275,7 @@ configure
 puts "\nCustom configuration:"
 configure(environment: :production, log_level: :error, timeout: 60)
 
-# ===== Symbol Handling in Ruby ==== 
+# ===== Symbol Handling in Ruby ====
 puts "\n=== Unique Symbol Features ==="
 
 # Symbols can be created from strings dynamically
@@ -305,4 +305,3 @@ some_symbols = Symbol.all_symbols.grep(/^test_/).first(5)
 puts "Some symbols from Ruby: #{some_symbols.inspect}"
 
 puts "\nThis demonstrates the unique power of Ruby symbols!"
-
