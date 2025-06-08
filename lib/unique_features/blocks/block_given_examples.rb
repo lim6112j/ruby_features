@@ -44,7 +44,7 @@ puts "Custom processing: #{process_data(text) { |r| r.gsub('L', '*') }}"
 # Pattern 2: Return an enumerator if no block given
 def custom_each(array)
   # Return an enumerator if no block is given
-  return array.to_enum(:custom_each) unless block_given?
+  return to_enum(:custom_each, array) unless block_given?
   
   array.each_with_index do |item, index|
     yield item, index
@@ -338,4 +338,3 @@ puts "Using lambda parameter: #{with_lambda("hello", ->(v) { v.reverse })}"
 puts "Using default lambda: #{with_lambda("hello")}"
 
 puts "\nThis demonstrates the versatility of Ruby's block_given? method!"
-
