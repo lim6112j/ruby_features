@@ -30,10 +30,10 @@ puts "\n=== Common Patterns with block_given? ==="
 def process_data(data)
   # Apply default transformation
   result = data.upcase
-  
+
   # Allow optional customization via block
   result = yield(result) if block_given?
-  
+
   result
 end
 
@@ -45,7 +45,7 @@ puts "Custom processing: #{process_data(text) { |r| r.gsub('L', '*') }}"
 def custom_each(array)
   # Return an enumerator if no block is given
   return to_enum(:custom_each, array) unless block_given?
-  
+
   array.each_with_index do |item, index|
     yield item, index
   end
@@ -64,7 +64,7 @@ puts "  First item and index: #{enum.next.inspect}"
 # Pattern 3: Different handling based on block presence
 def find_or_create(id)
   item = find_item(id)
-  
+
   if item
     # Item found - pass to block if given
     return block_given? ? yield(item) : item
@@ -97,13 +97,13 @@ puts "\n=== Control Flow with block_given? ==="
 # Early return vs continued processing
 def process_with_control_flow(data)
   return "No data provided" if data.nil?
-  
+
   # Process the data
   processed = "Processed: #{data}"
-  
+
   # If a block is given, let it transform the data and return
   return yield(processed) if block_given?
-  
+
   # Otherwise continue with default flow
   "#{processed} (default)"
 end
@@ -115,10 +115,10 @@ puts "With nil data: #{process_with_control_flow(nil)}"
 # Using block_given? in a loop
 def repeat_until(max_iterations = 10)
   iterations = 0
-  
+
   until iterations >= max_iterations
     iterations += 1
-    
+
     # If a block is given, yield to it and check its return value
     if block_given?
       result = yield iterations
@@ -127,7 +127,7 @@ def repeat_until(max_iterations = 10)
       puts "Iteration #{iterations}"
     end
   end
-  
+
   iterations
 end
 
@@ -161,7 +161,7 @@ class ChainableProcessor
   def initialize(value)
     @value = value
   end
-  
+
   def transform
     if block_given?
       @value = yield(@value)
@@ -170,7 +170,7 @@ class ChainableProcessor
       self  # Still return self even without a block
     end
   end
-  
+
   def format
     if block_given?
       yield(@value)
@@ -216,16 +216,16 @@ puts "\n=== Real-world Examples ==="
 # Example 1: Configuration DSL
 class Configuration
   attr_accessor :api_key, :timeout, :retries
-  
+
   def initialize
     @api_key = nil
     @timeout = 30
     @retries = 3
-    
+
     # Apply configuration block if given
     yield(self) if block_given?
   end
-  
+
   def validate!
     raise "API key is required" unless @api_key
     raise "Timeout must be positive" unless @timeout.positive?
@@ -249,7 +249,7 @@ def with_resource(resource_name)
   # Acquire the resource
   puts "  Opening #{resource_name}..."
   resource = "#{resource_name}_handle"
-  
+
   if block_given?
     begin
       # Let the caller use the resource via the block
@@ -281,26 +281,26 @@ class FilteredCollection
   def initialize(items)
     @items = items
   end
-  
+
   def each_item
     return to_enum(:each_item) unless block_given?
-    
+
     @items.each do |item|
       # Skip items that start with underscore (private items)
       next if item.to_s.start_with?('_')
-      
+
       # Yield matching items to the block
       yield item
     end
   end
-  
+
   def with_prefix(prefix)
     return to_enum(:with_prefix, prefix) unless block_given?
-    
+
     @items.each do |item|
       # Skip items that don't start with the prefix
       next unless item.to_s.start_with?(prefix)
-      
+
       # Yield matching items to the block
       yield item
     end
